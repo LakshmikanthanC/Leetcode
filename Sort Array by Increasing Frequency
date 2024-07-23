@@ -1,3 +1,5 @@
+Sort Array by Increasing Frequency
+
 class Solution {
 public:
     vector<int> frequencySort(vector<int>& nums) {
