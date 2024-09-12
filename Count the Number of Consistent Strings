@@ -1,0 +1,24 @@
+Count the Number of Consistent Strings
+
+
+
+class Solution {
+public:
+    int countConsistentStrings(string allowed, vector<string>& words) {
+    bitset<26> Aset=0;
+    for (char c: allowed)
+        Aset[c-'a']=1;
+    int cnt = 0;
+    for(string& w: words){
+        bool consistent=1;
+        for(char c: w){
+            if(Aset[c-'a']==0){
+                consistent=0;
+                break;
+            }
+        }
+        cnt+=consistent;
+    }
+    return cnt;
+    }
+};
