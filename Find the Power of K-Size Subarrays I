@@ -1,0 +1,36 @@
+Find the Power of K-Size Subarrays I
+
+
+
+#include <vector>
+#include <algorithm>  // For std::max_element
+
+class Solution {
+public:
+    std::vector<int> resultsArray(const std::vector<int>& nums, int k) {
+        std::vector<int> result;
+        int n = nums.size();
+
+        for (int i = 0; i <= n - k; ++i) {
+            bool isConsecutiveSorted = true;
+
+            // Check if the subarray is consecutive and sorted
+            for (int j = 1; j < k; ++j) {
+                if (nums[i + j] != nums[i + j - 1] + 1) {
+                    isConsecutiveSorted = false;
+                    break;
+                }
+            }
+
+            // Calculate the power
+            if (isConsecutiveSorted) {
+                int maxElement = *std::max_element(nums.begin() + i, nums.begin() + i + k);
+                result.push_back(maxElement);
+            } else {
+                result.push_back(-1);
+            }
+        }
+
+        return result;
+    }
+};
