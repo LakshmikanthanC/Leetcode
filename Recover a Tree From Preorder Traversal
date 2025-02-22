@@ -1,0 +1,53 @@
+Recover a Tree From Preorder Traversal
+
+
+
+class Solution {
+public:
+    TreeNode* recoverFromPreorder(string traversal) {
+        stack<pair<TreeNode*, int>> st;
+        int i = 0;
+        
+        while (i < traversal.size()) {
+            int level = 0;
+            while (i < traversal.size() && traversal[i] == '-') {
+                level++;
+                i++;
+            }
+
+            int num = 0;
+            while (i < traversal.size() && isdigit(traversal[i])) {
+                num = num * 10 + (traversal[i] - '0');
+                i++;
+            }
+
+            TreeNode* node = new TreeNode(num);
+
+            while (!st.empty() && st.top().second >= level) {
+                st.pop();
+            }
+
+            if (!st.empty()) {
+                if (!st.top().first->left) {
+                    st.top().first->left = node;
+                } else {
+                    st.top().first->right = node;
+                }
+            }
+
+            st.push({node, level});
+        }
+        while (st.size() > 1) {
+            st.pop();
+        }
+        return st.top().first;
+    }
+
+    // Helper function for inorder traversal (for verification)
+    void inorder(TreeNode* root) {
+        if (!root) return;
+        inorder(root->left);
+        cout << root->val << " ";
+        inorder(root->right);
+    }
+};
