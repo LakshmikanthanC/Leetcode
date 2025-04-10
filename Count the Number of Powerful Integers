@@ -1,0 +1,32 @@
+Count the Number of Powerful Integers
+
+
+
+class Solution {
+public:
+    long long numberOfPowerfulInt(long long start, long long finish, int limit, string s) {
+        return count(finish, limit, s) - count(start - 1, limit, s);
+    }
+
+private:
+    long long count(long long val, int limit, const string& sfx) {
+        string str = to_string(val);
+        int preLen = str.length() - sfx.length();
+        if (preLen < 0) return 0;
+
+        vector<vector<long long>> dp(preLen + 1, vector<long long>(2, 0));
+        dp[preLen][0] = 1;
+        dp[preLen][1] = str.substr(preLen) >= sfx ? 1 : 0;
+
+        for (int i = preLen - 1; i >= 0; --i) {
+            int digit = str[i] - '0';
+            dp[i][0] = (limit + 1) * dp[i + 1][0];
+            if (digit <= limit)
+                dp[i][1] = (long long)digit * dp[i + 1][0] + dp[i + 1][1];
+            else
+                dp[i][1] = (long long)(limit + 1) * dp[i + 1][0];
+        }
+
+        return dp[0][1];
+    }
+};
