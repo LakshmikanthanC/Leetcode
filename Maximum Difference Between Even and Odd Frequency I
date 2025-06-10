@@ -1,0 +1,19 @@
+Maximum Difference Between Even and Odd Frequency I
+
+
+
+class Solution {
+public:
+    int maxDifference(string s) {
+        int fre[26] = {0};
+        for(char c:s)
+            fre[c-'a']++;
+        int maxo=0,mine=100;
+        for(int f:fre){
+            if(f==0) continue;
+            if(f&1) maxo=max(f,maxo);
+            if((f&1)==0) mine=min(f,mine);
+        }
+        return maxo-mine;
+    }
+};
