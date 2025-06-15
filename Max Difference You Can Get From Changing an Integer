@@ -1,0 +1,45 @@
+Max Difference You Can Get From Changing an Integer
+
+
+
+class Solution {
+public:
+    int maxDiff(int num) {
+        //int maxDiff(int num) {
+    string s = to_string(num);
+    string maxStr = s, minStr = s;
+
+    // Maximize: replace the first digit not '9' with '9'
+    for (char d : s) {
+        if (d != '9') {
+            for (char &c : maxStr) {
+                if (c == d) c = '9';
+            }
+            break;
+        }
+    }
+
+    // Minimize
+    if (s[0] != '1') {
+        char d = s[0];
+        for (char &c : minStr) {
+            if (c == d) c = '1';
+        }
+    } else {
+        for (int i = 1; i < s.size(); ++i) {
+            if (s[i] != '0' && s[i] != '1') {
+                char d = s[i];
+                for (char &c : minStr) {
+                    if (c == d) c = '0';
+                }
+                break;
+            }
+        }
+    }
+
+    int maxNum = stoi(maxStr);
+    int minNum = stoi(minStr);
+
+    return maxNum - minNum;
+}    
+};
