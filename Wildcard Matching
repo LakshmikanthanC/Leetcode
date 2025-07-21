@@ -1,0 +1,40 @@
+Wildcard Matching
+
+
+
+class Solution {
+    bool dp_mem(int i, int j, string& s, string& p, vector<vector<int>>& dp) {
+        // Base cases
+        if (i < 0 && j < 0) return true;  // Both exhausted
+        
+        if (i < 0 && j >= 0) {  // String exhausted, pattern remaining
+            for (int k = 0; k <= j; k++) {// pattern is all '*', then true
+                if (p[k] != '*') return false;
+            }
+            return true;
+        }
+        
+        if (i >= 0 && j < 0) return false;  // Pattern exhausted, string remaining
+        
+        if (dp[i][j] != -1) return dp[i][j];
+        
+        // Character match or '?'
+        if (s[i] == p[j] || p[j] == '?') {
+            return dp[i][j] = dp_mem(i-1, j-1, s, p, dp);
+        }
+        
+        // '*' case
+        if (p[j] == '*') {
+            return dp[i][j] = dp_mem(i-1, j, s, p, dp) || dp_mem(i, j-1, s, p, dp);
+        }
+        
+        return dp[i][j] = false;
+    }
+    
+public:
+    bool isMatch(string s, string p) {
+        int n = s.size(), m = p.size();
+        vector<vector<int>> dp(n, vector<int>(m, -1));
+        return dp_mem(n-1, m-1, s, p, dp);
+    }
+};
