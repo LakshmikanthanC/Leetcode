@@ -1,0 +1,49 @@
+Permutation Sequence
+
+
+
+class Solution {
+public:
+int fact(int n)
+{
+    if(n==0 || n==1 || n<0)return 1;
+    return n*fact(n-1);
+}
+int cntr(int n,int i)
+{
+    return fact(n-i);
+}
+int find(vector<int>&acc,int k,int n)
+{
+    for(int j=1;j<=n;++j)
+    {
+        if(acc[j]==0)k--;
+        if(k==0)return j;
+    }
+    return -1;
+}
+    string getPermutation(int n, int k) {
+        
+        string ans="";
+        int cnt=0;
+        int i=1;
+        int j=1;
+        vector<int>acc(n+1,0);
+        while(cnt<k)
+        {
+          cnt+=cntr(n,i);
+          if(cnt>=k)
+          {
+            int d=find(acc,j,n);
+            if(d==-1)break;
+            acc[d]=1;
+            cnt-=cntr(n,i);
+            ans+=to_string(d);
+            i++;
+            j=0;
+          }
+          j++;
+        }
+        return ans;
+    }
+};
