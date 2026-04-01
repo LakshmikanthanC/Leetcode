@@ -1,0 +1,76 @@
+Robot Collisions
+
+
+
+using int2=pair<int, int>;// (position, idx)
+static constexpr int N=1<<10, mask=N-1, bshift=10;
+int freq[N];
+
+void radix_sort(int2* nums, int n) {
+    int2* buffer=(int2*)alloca(n*sizeof(int2));  // buffer
+    int2* in=nums;
+    int2* out=buffer;
+
+    // 3 rounds covers 30 bits 
+    for (int round=0; round < 3; round++) {
+        const int shift=round * bshift;
+        memset(freq, 0, sizeof(freq));
+
+        for (int i=0; i<n; i++)
+            freq[(in[i].first >> shift) & mask]++;
+
+        partial_sum(freq, freq+N, freq);
+
+        for (int i = n - 1; i >= 0; i--) {
+            int x = (in[i].first >> shift) & mask;
+            out[--freq[x]] = in[i];
+        }
+
+        // Swap pointers for the next round
+        swap(in, out);
+    }
+    //data is currently in buffer. We must copy it back to nums.
+    if (in != nums) {
+        memcpy(nums, in, n * sizeof(int2));
+    }
+}
+const int M=1e5;
+int2 robot[M];
+int Stack[M];
+class Solution {
+public:
+    vector<int> survivedRobotsHealths(vector<int>& positions, vector<int>& healths, string& directions) {
+        const int n=positions.size();
+        int2 robot[n];
+        for(int i=0; i<n; i++)// 0-indexed is fine
+            robot[i]={positions[i], i};
+        if (n<=1024) sort(robot, robot+n);
+        else radix_sort(robot, n);
+
+        int top=-1;
+        for(int k=0; k<n; k++){
+            const int i=robot[k].second;
+            if (directions[i]=='R') Stack[++top]=i;
+            else{
+                while(top!=-1 && healths[i]>0){
+                    int j=Stack[top];
+                    int x=healths[j]-healths[i];
+                    if (x>0) healths[j]--, healths[i]=0;
+                    else if (x<0) healths[j]=0, healths[i]--, top--;
+                    else healths[i]=healths[j]=0, top--;
+                }
+            }
+        }
+        vector<int> ans;
+        for(int x: healths)
+            if (x>0) ans.push_back(x);
+        return ans;
+    }
+};
+
+auto init = []() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+    return 'c';
+}();
