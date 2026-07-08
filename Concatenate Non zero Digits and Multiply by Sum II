@@ -1,0 +1,60 @@
+class Solution {
+public:
+    vector<int> sumAndMultiply(string s, vector<vector<int>>& x) {
+        int q = x.size();
+        int n = s.size();
+        long long MOD = 1e9 + 7;
+        
+       
+        vector<long long> pf(n + 1, 0);       
+        vector<long long> count_nz(n + 1, 0);
+        vector<long long> pref_val(n + 1, 0); 
+        vector<long long> pow10(n + 1, 1);    // Powers of 10 
+        
+     
+        for (int i = 1; i <= n; i++) {
+            pow10[i] = (pow10[i - 1] * 10) % MOD;
+        }
+        
+       
+        for (int i = 0; i < n; i++) {
+            int digit = s[i] - '0';
+            
+            if (digit != 0) {
+                pf[i + 1] = pf[i] + digit;
+                count_nz[i + 1] = count_nz[i] + 1;
+                pref_val[i + 1] = (pref_val[i] * 10 + digit) % MOD;
+            } else {
+                
+                pf[i + 1] = pf[i];
+                count_nz[i + 1] = count_nz[i];
+                pref_val[i + 1] = pref_val[i];
+            }
+        }
+        
+        vector<int> ans;
+        
+        
+        for (int y = 0; y < q; y++) {
+            int l = x[y][0];
+            int r = x[y][1];
+            
+         
+            long long sum_digits = pf[r + 1] - pf[l];
+            
+            
+            long long len = count_nz[r + 1] - count_nz[l];
+            
+            long long left_part = (pref_val[l] * pow10[len]) % MOD;
+            
+         
+            long long val = (pref_val[r + 1] - left_part + MOD) % MOD; 
+            
+           
+            long long temp = (val * sum_digits) % MOD;
+            ans.push_back(temp);
+        }
+        
+        return ans;
+    }
+};
