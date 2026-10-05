@@ -1,0 +1,17 @@
+Score of Parentheses
+
+
+
+class Solution {
+public:
+    int scoreOfParentheses(string& s) {
+        int score=0, b=0, p=0;
+        for(char c: s){
+            bool open=c=='(';
+            b+=(open<<1)-1;
+            score+=(-!open & (p<<b));//-1 mask
+            p=open;
+        }
+        return score;
+    }
+};
