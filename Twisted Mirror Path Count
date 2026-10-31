@@ -1,0 +1,31 @@
+Twisted Mirror Path Count
+
+
+
+constexpr int mod=1e9+7;
+int dp[500][500][2];// dp[i][j][dir] where dir=0/1 stand for right/down
+int n, m;// matrix convention
+class Solution {
+public:
+    int f(int i, int j, bool dir, vector<vector<int>>& grid){
+        if (i<0 || j<0) return 0;
+        if (i==0 && j==0) return 1;
+        if (dp[i][j][dir]!=-1) return dp[i][j][dir];
+        if (grid[i][j]){
+            bool di=dir, dj=!dir;
+            return dp[i][j][dir]=f(i-di, j-dj, !dir, grid);
+        }
+        long long step=0;
+        if (j-1>=0) 
+            step+=f(i, j-1, 1, grid);
+        if (i-1>=0)
+            step+=f(i-1, j, 0, grid);
+        return dp[i][j][dir]=step%mod;
+    }
+    int uniquePaths(vector<vector<int>>& grid) {
+        n=grid.size(), m=grid[0].size();
+        for(int i=0; i<n; i++)
+            fill(&dp[i][0][0], &dp[i][0][0]+(2*m), -1);
+        return f(n-1, m-1, 0, grid);
+    }
+};
